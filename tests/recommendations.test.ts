@@ -18,8 +18,17 @@ describe('Testa POST "/recommendations" - MainPage', () => {
     expect(result.status).toBe(201);
     expect(createdVideo).not.toBeNull();
   });
-  it.todo("Deve retornar XXX ao YYY");
-  it.todo("Deve retornar XXX ao YYY");
+  it("Deve retornar 422 ao criar com body errado", async () => {
+    const video = await _videoFactory({});
+    delete video.name;
+    const result = await supertest(app).post("/recommendations").send(video);
+    expect(result.status).toBe(422);
+  });
+  it("Deve retornar 409 ao criar um video com mesmo nome",async () => {
+    const video = await _videoFactory({persist: true});
+    const result = await supertest(app).post("/recommendations").send(video);
+    expect(result.status).toBe(409);
+  });
   it.todo("Deve retornar XXX ao YYY");
 });
 describe('Testa POST "/recommendations/:id/upvote" - Upvote Video', () => {
@@ -37,8 +46,8 @@ describe('Testa POST "/recommendations/:id/downvote" - Downvote Video', () => {
 
 describe('Testa GET "/recommendations" - MainPage', () => {
   it("Deve retornar XXX ao YYY", async () => {
-    const video = await _videoFactory({persist: true});
-    const result = await supertest(app).get('/recommendations');
+    const video = await _videoFactory({ persist: true });
+    const result = await supertest(app).get("/recommendations");
     expect(result.status).toBe(200);
     expect(result.body).toBeDefined();
   });
