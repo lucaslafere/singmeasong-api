@@ -32,16 +32,26 @@ describe('Testa POST "/recommendations" - MainPage', () => {
 });
 
 describe('Testa POST "/recommendations/:id/upvote" - Upvote Video', () => {
-  it.todo("Deve retornar XXX ao YYY");
-  it.todo("Deve retornar XXX ao YYY");
-  it.todo("Deve retornar XXX ao YYY");
-  it.todo("Deve retornar XXX ao YYY");
+  it("Deve retornar 200 ao dar upvote em um video existente", async () => {
+    await _videoFactory({persist: true});
+    const result = await supertest(app).post('/recommendations/1/upvote');
+    expect(result.status).toBe(200);
+  });
+  it("Deve retornar 404 ao dar upvote em um video que nao existe", async () => {
+    const result = await supertest(app).post('/recommendations/9999999/upvote');
+    expect(result.status).toBe(404);
+  });
 });
 describe('Testa POST "/recommendations/:id/downvote" - Downvote Video', () => {
-  it.todo("Deve retornar XXX ao YYY");
-  it.todo("Deve retornar XXX ao YYY");
-  it.todo("Deve retornar XXX ao YYY");
-  it.todo("Deve retornar XXX ao YYY");
+  it("Deve retornar 200 ao dar downvote em um video existente", async () => {
+    await _videoFactory({persist: true});
+    const result = await supertest(app).post('/recommendations/1/downvote');
+    expect(result.status).toBe(200);
+  });
+  it("Deve retornar 404 ao dar downvote em um video que nao existe", async () => {
+    const result = await supertest(app).post('/recommendations/9999999/downvote');
+    expect(result.status).toBe(404);
+  });
 });
 
 describe('Testa GET "/recommendations" - MainPage', () => {
