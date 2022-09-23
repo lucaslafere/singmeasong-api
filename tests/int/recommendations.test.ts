@@ -1,7 +1,7 @@
 import supertest from "supertest";
-import app from "../src/app";
-import { prisma } from "../src/database";
-import _videoFactory from "./factories/videoFactory";
+import app from "../../src/app";
+import { prisma } from "../../src/database";
+import _videoFactory from "../factories/videoFactory";
 
 beforeEach(async () => {
   await prisma.$executeRaw`TRUNCATE TABLE "recommendations" RESTART IDENTITY`;
@@ -24,13 +24,13 @@ describe('Testa POST "/recommendations" - MainPage', () => {
     const result = await supertest(app).post("/recommendations").send(video);
     expect(result.status).toBe(422);
   });
-  it("Deve retornar 409 ao criar um video com mesmo nome",async () => {
-    const video = await _videoFactory({persist: true});
+  it("Deve retornar 409 ao criar um video com mesmo nome", async () => {
+    const video = await _videoFactory({ persist: true });
     const result = await supertest(app).post("/recommendations").send(video);
     expect(result.status).toBe(409);
   });
-  it.todo("Deve retornar XXX ao YYY");
 });
+
 describe('Testa POST "/recommendations/:id/upvote" - Upvote Video', () => {
   it.todo("Deve retornar XXX ao YYY");
   it.todo("Deve retornar XXX ao YYY");
