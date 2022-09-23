@@ -45,34 +45,55 @@ describe('Testa POST "/recommendations/:id/downvote" - Downvote Video', () => {
 });
 
 describe('Testa GET "/recommendations" - MainPage', () => {
-  it("Deve retornar XXX ao YYY", async () => {
-    const video = await _videoFactory({ persist: true });
+  it("Deve retornar 200 ao fazer um GET", async () => {
+    await _videoFactory({ persist: true });
     const result = await supertest(app).get("/recommendations");
     expect(result.status).toBe(200);
     expect(result.body).toBeDefined();
   });
-  it.todo("Deve retornar XXX ao YYY");
-  it.todo("Deve retornar XXX ao YYY");
-  it.todo("Deve retornar XXX ao YYY");
 });
 
 describe('Testa GET "/recommendations/:id" - Video Page by Id', () => {
-  it.todo("Deve retornar XXX ao YYY");
-  it.todo("Deve retornar XXX ao YYY");
-  it.todo("Deve retornar XXX ao YYY");
-  it.todo("Deve retornar XXX ao YYY");
+  it("Deve retornar 200 ao buscar um video existente para aquele ID", async () => {
+    await _videoFactory({persist: true});
+    const result = await supertest(app).get(`/recommendations/1`);
+    expect(result.status).toBe(200);
+    expect(result.body).toBeDefined();
+  });
+  it("Deve retornar 404 ao buscar um ID que nao existe", async () => {
+    const result = await supertest(app).get(`/recommendations/99999999999`);
+    expect(result.status).toBe(404);
+  });
 });
 describe('Testa GET "/recommendations/random" - Random Video Recommended', () => {
-  it.todo("Deve retornar XXX ao YYY");
-  it.todo("Deve retornar XXX ao YYY");
-  it.todo("Deve retornar XXX ao YYY");
-  it.todo("Deve retornar XXX ao YYY");
+  it("Deve retornar 200 ao buscar um video aleatório quando existe um video no banco de dados", async () => {
+    await _videoFactory({persist: true});
+    const result = await supertest(app).get('/recommendations/random');
+    expect(result.status).toBe(200);
+    expect(result.body).toBeDefined();
+  });
+  it("Deve retornar 404 ao buscar um video aleatório quando NÃO existe um vídeo no banco de dados", async () => {
+    const result = await supertest(app).get('/recommendations/random');
+    expect(result.status).toBe(404);
+  });
 });
 describe('Testa GET "/recommendations/top/:amount" - Order Videos by score amount', () => {
-  it.todo("Deve retornar XXX ao YYY");
-  it.todo("Deve retornar XXX ao YYY");
-  it.todo("Deve retornar XXX ao YYY");
-  it.todo("Deve retornar XXX ao YYY");
+  it("Deve retornar 200 ao buscar os top vídeos, passando como params a quantidade de videos a serem listados", async () => {
+    await _videoFactory({persist: true});
+    const result = await supertest(app).get('/recommendations/top/10')
+    expect(result.status).toBe(200);
+    expect(result.body).toBeDefined();
+  });
+  it("Deve retornar 200 e 10 videos", async () => {
+    await _videoFactory({persist: true});
+    await _videoFactory({persist: true});
+    await _videoFactory({persist: true});
+    await _videoFactory({persist: true});
+    await _videoFactory({persist: true});
+    const result = await supertest(app).get('/recommendations/top/10')
+    expect(result.status).toBe(200);
+    expect(result.body.length).toBe(5);
+  });
 });
 
 afterAll(async () => {
