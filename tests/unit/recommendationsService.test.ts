@@ -3,7 +3,6 @@ import { recommendationRepository } from "../../src/repositories/recommendationR
 import { recommendationService } from "../../src/services/recommendationsService";
 
 beforeEach(() => {
-  jest.resetAllMocks();
   jest.clearAllMocks();
 });
 
@@ -186,48 +185,49 @@ describe("Testes unitários do recommendation service", () => {
   });
   it("Deveria retornar um video aleatorio, testando numero menor que 0.7 para random", async () => {
     jest.spyOn(Math, "random").mockImplementation((): any => {
-        return 0.2;
+      return 0.2;
+    });
+    jest.spyOn(Math, "floor").mockImplementationOnce((): any => {
+      0;
+    });
+    jest
+      .spyOn(recommendationRepository, "findAll")
+      .mockImplementation((): any => {
+        return [
+          {
+            id: 1,
+            name: "bla",
+            youtubeLink: "https://www.youtube.com/watch?v=cGOyN-4Kb7U",
+            score: 20,
+          },
+        ];
       });
-      jest.spyOn(Math, "floor").mockImplementationOnce((): any => {
-        0;
-      });
-      jest
-        .spyOn(recommendationRepository, "findAll")
-        .mockImplementation((): any => {
-          return [
-            {
-              id: 1,
-              name: "bla",
-              youtubeLink: "https://www.youtube.com/watch?v=cGOyN-4Kb7U",
-              score: 20,
-            },
-          ];
-        });
-      await recommendationService.getRandom();
-      expect(recommendationRepository.findAll).toBeCalled();
-      expect(Math.random).toBeCalled();
-      expect(Math.floor).toBeCalled();
+    await recommendationService.getRandom();
+    expect(recommendationRepository.findAll).toBeCalled();
+    expect(Math.random).toBeCalled();
+    expect(Math.floor).toBeCalled();
   });
-  it("Deveria retornar not_found", async () => {
-    jest.spyOn(Math, "random").mockImplementation((): any => {
-        return 0.2;
-      });
-      jest
-        .spyOn(recommendationRepository, "findAll")
-        .mockImplementation((): any => {
-          return {};
-        });
+  it("Deveria retornar not_found em getRandom", async () => {
+    
+    jest.spyOn(recommendationRepository, "findAll").mockResolvedValueOnce([]);
+    jest.spyOn(recommendationRepository, "findAll").mockResolvedValueOnce([]);
+    try {
       await recommendationService.getRandom();
-      expect(recommendationRepository.findAll).toBeCalled();
-      expect(Math.random).toBeCalled();
+    } catch (error) {
+      expect(error.type).toBe("not_found");
+    }
   });
-  it("Deveria XXX", async () => {});
-  it("Deveria XXX", async () => {});
-  it("Deveria XXX", async () => {});
-  it("Deveria XXX", async () => {});
-  it("Deveria XXX", async () => {});
+  it("Deveria retornar not_found em upvote", async () => {
+    
+    jest.spyOn(recommendationRepository, "find").mockImplementationOnce((): any => {});
+    try {
+      await recommendationService.upvote(999999);
+    } catch (error) {
+      expect(error.type).toBe("not_found");
+    }
+  });
 });
 
 afterEach(() => {
-    jest.spyOn(Math, 'random').mockRestore();
-  });
+  jest.spyOn(Math, "random").mockRestore();
+});
