@@ -21,6 +21,7 @@ Then, after you create the .env file as in .env.example, run the following comma
 ```
 npx prisma migrate dev
 ```
+If the command above doesn't work, manually update prisma/client with  ``` npm i @prisma/client ```
 
 To run unit tests run: 
 
