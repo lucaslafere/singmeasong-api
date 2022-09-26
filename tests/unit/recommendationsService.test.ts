@@ -93,7 +93,7 @@ describe("Testes unitários do recommendation service", () => {
           id: 1,
           name: "blabla",
           youtubeLink: "https://www.youtube.com/watch?v=cGOyN-4Kb7U",
-          score: 3,
+          score: 1,
         };
       });
     await recommendationService.downvote(1);
